@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+using SimpleJSON;
 using ROSBridgeLib.std_msgs;
 using UnityEngine;
 

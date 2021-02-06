@@ -304,6 +304,7 @@ using SimpleJSON;
                 _pendingServiceResponses[id] = handler;
                 string s = ROSBridgeMsg.CallService(service_name, id, args);
                 Debug.Log("Sending " + s);
+                Debug.Log(_pendingServiceResponses[id]);
                 _ws.Send(s);
             }
         }
@@ -390,7 +391,7 @@ using SimpleJSON;
         /// </summary>
         /// <param name="s"></param>
 		private void OnMessage(string s) {
-		 	//Debug.Log ("Got a message " + s);
+		 	Debug.Log ("Got a message " + s);
 		 	if((s != null) && !s.Equals ("")) {
 		 		JSONNode node = JSONNode.Parse(s);
                 //Debug.Log ("Parsed it");
@@ -430,7 +431,7 @@ using SimpleJSON;
                 }
                 else if("service_response".Equals (op)) {
                     // <Changed>
-                    //Debug.Log ("Got service response " + node.ToString ());
+                    Debug.Log ("Got service response " + node.ToString ());
                     // </Changed>
                     string service_name = node["service"];
                     // <Changed>
@@ -438,6 +439,7 @@ using SimpleJSON;
                     Type targetListener = null;
                     if (!(node["id"] is JSONLazyCreator))
                     {
+                        Debug.Log("response enqueued");
                         _responsesQ.Enqueue(node);
                     }
                     else
@@ -482,6 +484,7 @@ using SimpleJSON;
 			RenderTask newTask = null;
             lock (_queueLock)
             {
+                
                 while (_taskQ.Count > 0)
                 {
                     newTask = _taskQ.Dequeue();
@@ -515,17 +518,24 @@ using SimpleJSON;
                             }
                         }
                     }
+                    }
                     // </Changed>
 
                     // <Changed>
                     while (_responsesQ.Count > 0)
                     {
+                        //Debug.Log("while statement");
+                        Debug.Log(_pendingServiceResponses.Keys);
                         JSONNode curr_response = _responsesQ.Dequeue();
+                        Debug.Log(curr_response);
                         JSONServiceResponseHandler handler;
                         if (!_pendingServiceResponses.TryGetValue(curr_response["id"].Value, out handler))
                         {
+                            //Debug.Log("line 530");
+                            //Debug.Log(handler);
                             continue;
                         }
+                        
                         handler(curr_response);
                     }
                     // </Changed>
@@ -548,7 +558,7 @@ using SimpleJSON;
                         _serviceResponse = null;
                     }
                     // </Changed>
-                }
+                
             }
         }
 

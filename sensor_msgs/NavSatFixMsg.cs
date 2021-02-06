@@ -99,6 +99,24 @@ namespace ROSBridgeLib
                 _position_covariance_type = (PositionCovarianceType)msg["position_covariance_type"].AsInt;
             }
 
+            //our changes:
+
+            public NavSatFixMsg(double lat, double lng, double alt)
+            {
+                _header = new std_msgs.HeaderMsg(0, new std_msgs.TimeMsg(0,0), "hello");
+                _status = (NavSatStatus)(-2);
+                _service = (NavSatService)0;
+
+                _latitude = lat;
+                _longitude = lng;
+                _altitude = alt;
+
+
+                //JSONArray temp_covar_array = new JSONArray();
+                _position_covariance = new double[1];
+                _position_covariance_type = (PositionCovarianceType)(-1);
+            }
+
             public static string getMessageType()
             {
                 return "sensor_msgs/NavSatFix";
