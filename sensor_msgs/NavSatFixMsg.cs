@@ -1,4 +1,4 @@
-﻿using SimpleJSON;
+using SimpleJSON;
 
 namespace ROSBridgeLib
 {
